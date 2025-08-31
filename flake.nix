@@ -55,6 +55,9 @@
           pkgs.stdenv.cc.cc.lib
         ];
 
+        # Platform-specific library path variable
+        libPathVar = if pkgs.stdenv.isDarwin then "DYLD_LIBRARY_PATH" else "LD_LIBRARY_PATH";
+
         # Load workspace from current directory
         workspace = uv2nix.lib.workspace.loadWorkspace {
           workspaceRoot = ./.;
@@ -146,7 +149,7 @@
 
             postInstall = (old.postInstall or "") + ''
               wrapProgram $out/bin/puss-say \
-                --prefix LD_LIBRARY_PATH : ${pkgs.lib.makeLibraryPath runtimeLibs}
+                --prefix ${libPathVar} : ${pkgs.lib.makeLibraryPath runtimeLibs}
             '';
 
             nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
@@ -188,7 +191,7 @@
               # binutils is needed for `ld` so it can find the libraries
 
               wrapProgram $out/bin/puss-say \
-                --prefix LD_LIBRARY_PATH : ${pkgs.lib.makeLibraryPath runtimeLibs} \
+                --prefix ${libPathVar} : ${pkgs.lib.makeLibraryPath runtimeLibs} \
                 --prefix PATH : ${pkgs.binutils}/bin \
                 --set PYTHONPATH "${baseVirtualenv}/${python.sitePackages}"
             '';
@@ -214,8 +217,8 @@
             # Prevent uv from downloading managed Python's
             UV_PYTHON_DOWNLOADS = "never";
 
-            # Set LD_LIBRARY_PATH for portaudio and other libraries
-            LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath runtimeLibs;
+            # Set library path for portaudio and other libraries
+            "${libPathVar}" = pkgs.lib.makeLibraryPath runtimeLibs;
           };
 
           shellHook = ''
