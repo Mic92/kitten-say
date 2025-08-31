@@ -53,6 +53,7 @@
           pkgs.portaudio
           pkgs.libsndfile
           pkgs.stdenv.cc.cc.lib
+          pkgs.espeak-ng
         ];
 
         # Platform-specific library path variable
@@ -69,94 +70,7 @@
         };
 
         # Build fixups overlay
-        pyprojectOverrides = final: prev: {
-          # Add setuptools for packages that need it
-          kittentts = prev.kittentts.overrideAttrs (old: {
-            nativeBuildInputs =
-              (old.nativeBuildInputs or [ ])
-              ++ final.resolveBuildSystem {
-                setuptools = [ ];
-              };
-          });
-
-          docopt = prev.docopt.overrideAttrs (old: {
-            nativeBuildInputs =
-              (old.nativeBuildInputs or [ ])
-              ++ final.resolveBuildSystem {
-                setuptools = [ ];
-              };
-          });
-
-          curated-tokenizers = prev.curated-tokenizers.overrideAttrs (old: {
-            nativeBuildInputs =
-              (old.nativeBuildInputs or [ ])
-              ++ final.resolveBuildSystem {
-                setuptools = [ ];
-                cython = [ ];
-              };
-          });
-
-          # Ignore missing CUDA libraries since we're using CPU only
-          nvidia-cufile-cu12 = prev.nvidia-cufile-cu12.overrideAttrs (old: {
-            autoPatchelfIgnoreMissingDeps = [
-              "libmlx5.so.1"
-              "librdmacm.so.1"
-              "libibverbs.so.1"
-            ];
-          });
-
-          nvidia-cusolver-cu12 = prev.nvidia-cusolver-cu12.overrideAttrs (old: {
-            autoPatchelfIgnoreMissingDeps = [
-              "libnvJitLink.so.12"
-              "libcusparse.so.12"
-              "libcublas.so.12"
-              "libcublasLt.so.12"
-            ];
-          });
-
-          nvidia-cusparse-cu12 = prev.nvidia-cusparse-cu12.overrideAttrs (old: {
-            autoPatchelfIgnoreMissingDeps = [
-              "libnvJitLink.so.12"
-            ];
-          });
-
-          # Torch CUDA dependencies - ignore all since we're CPU only
-          torch = prev.torch.overrideAttrs (old: {
-            autoPatchelfIgnoreMissingDeps = [
-              "libcudart.so.12"
-              "libcusolver.so.11"
-              "libcublas.so.12"
-              "libcusparse.so.12"
-              "libcudnn.so.9"
-              "libcusparseLt.so.0"
-              "libcufile.so.0"
-              "libnvrtc.so.12"
-              "libcuda.so.1"
-              "libcufft.so.11"
-              "libcurand.so.10"
-              "libcublasLt.so.12"
-              "libnccl.so.2"
-              "libcupti.so.12"
-            ];
-          });
-
-          # Add runtime library dependencies
-          puss-say = prev.puss-say.overrideAttrs (old: {
-            propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [
-              pkgs.portaudio
-              pkgs.libsndfile
-            ];
-
-            postInstall = (old.postInstall or "") + ''
-              wrapProgram $out/bin/puss-say \
-                --prefix ${libPathVar} : ${pkgs.lib.makeLibraryPath runtimeLibs}
-            '';
-
-            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
-              pkgs.makeWrapper
-            ];
-          });
-        };
+        pyprojectOverrides = final: prev: { };
 
         # Python set with overlays
         pythonSet =
@@ -192,7 +106,14 @@
 
               wrapProgram $out/bin/puss-say \
                 --prefix ${libPathVar} : ${pkgs.lib.makeLibraryPath runtimeLibs} \
-                --prefix PATH : ${pkgs.binutils}/bin \
+                --prefix PATH : ${
+                  pkgs.lib.makeBinPath (
+                    [ pkgs.espeak-ng ]
+                    ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+                      pkgs.binutils
+                    ]
+                  )
+                } \
                 --set PYTHONPATH "${baseVirtualenv}/${python.sitePackages}"
             '';
           });

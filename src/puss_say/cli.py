@@ -6,6 +6,7 @@ import sys
 
 import sounddevice as sd
 import soundfile as sf
+from huggingface_hub import hf_hub_download
 from kittentts import KittenTTS
 
 AVAILABLE_VOICES = [
@@ -21,6 +22,8 @@ AVAILABLE_VOICES = [
 
 DEFAULT_VOICE = "expr-voice-2-f"
 DEFAULT_MODEL = "KittenML/kitten-tts-nano-0.2"
+DEFAULT_MODEL_FILE = "kitten_tts_nano_v0_2.onnx"
+DEFAULT_VOICES_FILE = "voices.npz"
 SAMPLE_RATE = 24000
 
 
@@ -39,8 +42,12 @@ def say_text(
     speed: float = 1.0,
 ) -> None:
     """Generate and play TTS audio."""
-    # Initialize the model
-    model = KittenTTS(DEFAULT_MODEL)
+    # Download model files from HuggingFace
+    model_path = hf_hub_download(DEFAULT_MODEL, DEFAULT_MODEL_FILE)
+    voices_path = hf_hub_download(DEFAULT_MODEL, DEFAULT_VOICES_FILE)
+    
+    # Initialize the model with actual file paths
+    model = KittenTTS(model_path, voices_path)
 
     # Generate audio
     try:
