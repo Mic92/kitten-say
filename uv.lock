@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.13"
 
 [[package]]
@@ -403,7 +403,7 @@ wheels = [
 [[package]]
 name = "kittentts"
 version = "0.1.0"
-source = { git = "https://github.com/KittenML/KittenTTS.git?rev=refs%2Fpull%2F22%2Fhead#3883bdf80d9e9e4bdf0d1d4707fa68d995d41c56" }
+source = { git = "https://github.com/Mic92/KittenTTS.git#b5024c4c138df97e7583fd0c174e0f3a4b9fb079" }
 dependencies = [
     { name = "espeakng-loader" },
     { name = "huggingface-hub" },
@@ -905,7 +905,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "kittentts", git = "https://github.com/KittenML/KittenTTS.git?rev=refs%2Fpull%2F22%2Fhead" },
+    { name = "kittentts", git = "https://github.com/Mic92/KittenTTS.git" },
     { name = "sounddevice", specifier = ">=0.5.0" },
     { name = "soundfile", specifier = ">=0.12.1" },
 ]
