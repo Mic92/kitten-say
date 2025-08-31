@@ -20,7 +20,7 @@ AVAILABLE_VOICES = [
 ]
 
 DEFAULT_VOICE = "expr-voice-2-f"
-DEFAULT_MODEL = "KittenML/kitten-tts-nano-0.1"
+DEFAULT_MODEL = "KittenML/kitten-tts-nano-0.2"
 SAMPLE_RATE = 24000
 
 
