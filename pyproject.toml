@@ -1,6 +1,6 @@
 [project]
 name = "puss-say"
-version = "0.1.0"
+version = "1.0.0"
 description = "A CLI tool that mimics macOS say command using KittenTTS"
 readme = "README.md"
 license = { text = "MIT" }
