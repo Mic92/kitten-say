@@ -88,16 +88,35 @@ List available voices:
 puss-say --list-voices
 ```
 
+Choose a different model:
+```bash
+puss-say -m nano "Fastest, smallest model"
+puss-say -m mini "Best quality, largest model"
+```
+
+List available models:
+```bash
+puss-say --list-models
+```
+
 ## Available Voices
 
-- `expr-voice-2-m` - Male voice 2
-- `expr-voice-2-f` - Female voice 2 [default]
-- `expr-voice-3-m` - Male voice 3
-- `expr-voice-3-f` - Female voice 3
-- `expr-voice-4-m` - Male voice 4
-- `expr-voice-4-f` - Female voice 4
-- `expr-voice-5-m` - Male voice 5
-- `expr-voice-5-f` - Female voice 5
+- `Bella` [default]
+- `Jasper`
+- `Luna`
+- `Bruno`
+- `Rosie`
+- `Hugo`
+- `Kiki`
+- `Leo`
+
+## Available Models
+
+| Model | Params | Size | Description |
+|-------|--------|------|-------------|
+| `nano` | 15M | 56MB | Fastest inference |
+| `micro` | 40M | 41MB | Good balance (default) |
+| `mini` | 80M | 80MB | Best quality |
 
 ## Requirements
 

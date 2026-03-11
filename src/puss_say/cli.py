@@ -91,12 +91,13 @@ def main() -> None:
         epilog="""
 Examples:
   puss-say "Hello, world!"
-  puss-say -v expr-voice-3-m "Hello from a male voice"
+  puss-say -v Jasper "Hello from a male voice"
+  puss-say -m nano "Use the fastest model"
   puss-say -o output.wav "Save this to a file"
   puss-say -s 0.8 "Speak slowly"
-  puss-say -s 1.5 "Speak faster"
   echo "Pipe text to speech" | puss-say
   puss-say -l  # List available voices
+  puss-say --list-models  # List available models
         """,
     )
 
