@@ -112,11 +112,11 @@ puss-say --list-models
 
 ## Available Models
 
-| Model | Params | Size | Description |
-|-------|--------|------|-------------|
-| `nano` | 15M | 56MB | Fastest inference |
-| `micro` | 40M | 41MB | Good balance (default) |
-| `mini` | 80M | 80MB | Best quality |
+| Model | Params | Download | Description |
+|-------|--------|----------|-------------|
+| `nano` | 15M | 60 MB | Fastest inference |
+| `micro` | 40M | 45 MB | Good balance (default) |
+| `mini` | 80M | 82 MB | Best quality |
 
 ## Requirements
 
