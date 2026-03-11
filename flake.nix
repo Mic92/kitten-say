@@ -41,8 +41,8 @@
         # Override stdenv with a higher Darwin minimum version for onnxruntime compatibility
         stdenvDarwin13 = pkgs.stdenv.override (old: {
           targetPlatform = pkgs.stdenv.targetPlatform // {
-            darwinMinVersion = "13.0";
-            darwinSdkVersion = "13.0";
+            darwinMinVersion = "14.0";
+            darwinSdkVersion = "14.0";
           };
         });
 
