@@ -57,7 +57,7 @@ puss-say "Hello, world!"
 
 Choose a different voice:
 ```bash
-puss-say -v expr-voice-3-m "Hello from a male voice"
+puss-say -v Jasper "Hello from a male voice"
 ```
 
 Save to file:

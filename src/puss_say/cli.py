@@ -6,24 +6,28 @@ import sys
 
 import sounddevice as sd
 import soundfile as sf
-from huggingface_hub import hf_hub_download
 from kittentts import KittenTTS
 
 AVAILABLE_VOICES = [
-    "expr-voice-2-m",
-    "expr-voice-2-f",
-    "expr-voice-3-m",
-    "expr-voice-3-f",
-    "expr-voice-4-m",
-    "expr-voice-4-f",
-    "expr-voice-5-m",
-    "expr-voice-5-f",
+    "Bella",
+    "Jasper",
+    "Luna",
+    "Bruno",
+    "Rosie",
+    "Hugo",
+    "Kiki",
+    "Leo",
 ]
 
-DEFAULT_VOICE = "expr-voice-2-f"
-DEFAULT_MODEL = "KittenML/kitten-tts-nano-0.2"
-DEFAULT_MODEL_FILE = "kitten_tts_nano_v0_2.onnx"
-DEFAULT_VOICES_FILE = "voices.npz"
+DEFAULT_VOICE = "Bella"
+
+AVAILABLE_MODELS = {
+    "nano": "KittenML/kitten-tts-nano-0.8",
+    "micro": "KittenML/kitten-tts-micro-0.8",
+    "mini": "KittenML/kitten-tts-mini-0.8",
+}
+
+DEFAULT_MODEL = "micro"
 SAMPLE_RATE = 24000
 
 
@@ -35,19 +39,24 @@ def list_voices() -> None:
         print(f"  {voice}{default_marker}")
 
 
+def list_models() -> None:
+    """List all available models."""
+    print("Available models:")
+    for name, repo in AVAILABLE_MODELS.items():
+        default_marker = " (default)" if name == DEFAULT_MODEL else ""
+        print(f"  {name:6s}  {repo}{default_marker}")
+
+
 def say_text(
     text: str,
     voice: str = DEFAULT_VOICE,
     output_file: str | None = None,
     speed: float = 1.0,
+    model_name: str = DEFAULT_MODEL,
 ) -> None:
     """Generate and play TTS audio."""
-    # Download model files from HuggingFace
-    model_path = hf_hub_download(DEFAULT_MODEL, DEFAULT_MODEL_FILE)
-    voices_path = hf_hub_download(DEFAULT_MODEL, DEFAULT_VOICES_FILE)
-    
-    # Initialize the model with actual file paths
-    model = KittenTTS(model_path, voices_path)
+    repo_id = AVAILABLE_MODELS[model_name]
+    model = KittenTTS(repo_id)
 
     # Generate audio
     try:
@@ -106,6 +115,14 @@ Examples:
     )
 
     parser.add_argument(
+        "-m",
+        "--model",
+        default=DEFAULT_MODEL,
+        choices=AVAILABLE_MODELS,
+        help=f"Model size to use (default: {DEFAULT_MODEL})",
+    )
+
+    parser.add_argument(
         "-o",
         "--output",
         metavar="FILE",
@@ -117,6 +134,12 @@ Examples:
         "--list-voices",
         action="store_true",
         help="List available voices",
+    )
+
+    parser.add_argument(
+        "--list-models",
+        action="store_true",
+        help="List available models",
     )
 
     parser.add_argument(
@@ -142,6 +165,11 @@ Examples:
         list_voices()
         return
 
+    # Handle list models
+    if args.list_models:
+        list_models()
+        return
+
     # Handle interactive mode
     if args.interactive:
         print("Interactive mode. Type text and press Enter to speak. Ctrl+D to exit.")
@@ -150,7 +178,7 @@ Examples:
                 try:
                     text = input("> ")
                     if text.strip():
-                        say_text(text, voice=args.voice, speed=args.speed)
+                        say_text(text, voice=args.voice, speed=args.speed, model_name=args.model)
                 except EOFError:
                     print("\nExiting...")
                     break
@@ -169,7 +197,7 @@ Examples:
             parser.error("No text provided. Use --help for usage information.")
 
     # Generate and play/save speech
-    say_text(text, voice=args.voice, output_file=args.output, speed=args.speed)
+    say_text(text, voice=args.voice, output_file=args.output, speed=args.speed, model_name=args.model)
 
 
 if __name__ == "__main__":
