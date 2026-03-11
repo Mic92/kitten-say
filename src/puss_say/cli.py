@@ -154,9 +154,9 @@ Examples:
         "-s",
         "--speed",
         type=float,
-        default=1.0,
+        default=1.5,
         metavar="SPEED",
-        help="Speech speed (default: 1.0, range: 0.5-2.0)",
+        help="Speech speed (default: 1.5, range: 0.5-2.0)",
     )
 
     args = parser.parse_args()
