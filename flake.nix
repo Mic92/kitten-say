@@ -69,8 +69,14 @@
           sourcePreference = "wheel"; # Prefer binary wheels to avoid build issues
         };
 
-        # Build fixups overlay
-        pyprojectOverrides = final: prev: { };
+        # Build fixups overlay for packages that need setuptools
+        pyprojectOverrides = final: prev: {
+          kittentts = prev.kittentts.overrideAttrs (old: {
+            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
+              final.setuptools
+            ];
+          });
+        };
 
         # Python set with overlays
         pythonSet =
